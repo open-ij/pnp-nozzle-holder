@@ -1,5 +1,6 @@
 module Magnet() {
-    cube([20, 10, 3], center=true);
+    translate([-10, 0, 0])
+    cube([20, 10, 3]);
 }
 
 module Nozzle() {
@@ -16,59 +17,90 @@ module Nozzle() {
 }
 
 module CutoutNozzle() {
-    length = 30;
     difference() {
         translate([0, 0, 4.5])
-        rotate(-90, [0, 0, 1])
         rotate(-90, [1, 0, 0])
-        linear_extrude(length)
+        linear_extrude(30)
         polygon([[-3.5, 5.5], [-3.5, 3], [-6.5, 3],
                  [-6.5, 1.5], [-3.5, 1.5], [-3.5, -1],
                  [3.5, -1], [3.5, 1.5], [6.5, 1.5],
                  [6.5, 3], [3.5, 3], [3.5, 5.5]]);
 
-        translate([0, -3.5, -1])
+        translate([-3.5, 0, -1])
         linear_extrude(2.5)
-        polygon([[0, 0], [5, 0], [0, 2]]);
+        polygon([[0, 0], [0, 5], [2, 0]]);
 
-        translate([0, -3.5, 3])
+        translate([-3.5, 0, 3])
         linear_extrude(2.5)
-        polygon([[0, 0], [5, 0], [0, 2]]);
+        polygon([[0, 0], [0, 5], [2, 0]]);
 
-        translate([0, 3.5, -1])
+        translate([3.5, 0, -1])
         linear_extrude(2.5)
-        polygon([[0, 0], [5, 0], [0, -2]]);
+        polygon([[0, 0], [0, 5], [-2, 0]]);
 
-        translate([0, 3.5, 3])
+        translate([3.5, 0, 3])
         linear_extrude(2.5)
-        polygon([[0, 0], [5, 0], [0, -2]]);
+        polygon([[0, 0], [0, 5], [-2, 0]]);
     }
 }
 
-module PnPHolder() {
+module CutoutMagnet() {
+    translate([-10, 0, 0])
+    cube([20, 11, 3]);
+    translate([0, 5, -6])
+    cylinder(d=3, 15);
+}
+
+module NozzleHolder() {
     length = 142;
     difference() {
-        translate([0, length, 0])
-        rotate(90, [1, 0, 0])
-        linear_extrude(length)
-        polygon([[0, 0], [35, 0], [35, 1.5], [25, 1.5], [25, 4.5], [0, 4.5]]);
+        cube([142, 35, 9.5]);
+
+        translate([-1, 10, 4.5])
+        cube([144, 16, 6]);
+
+        translate([-1, 25, 1.5])
+        cube([144, 11, 9]);
 
         for(i=[0:5]) {
-            translate([10, i * 22 + 12, 0])
+            translate([i * 22 + 16, 14, 0])
             CutoutNozzle();
+        }
+
+        for(i=[0:5]) {
+            translate([i * 22 + 16, 0, 4.5])
+            CutoutMagnet();
         }
     }
 }
 
+module MountingBracket() {
+    translate([0, -5, -15])
+    cube([142, 5, 24.5]);
+    translate([0, 0, -15])
+    difference() {
+        cube([142, 10, 8]);
+        translate([-1, 0, 2])
+        cube([144, 11, 4]);
+    }
+}
+
+module PnPHolder() {
+    NozzleHolder();
+    MountingBracket();
+}
+
 module PnPHolderWithParts() {
     PnPHolder();
-    for (i=[0:5]) {
-        translate([5, i * 22 + 12, 3.5 + 1.5])
-        rotate(90, [0, 0, 1])
-        Magnet();
 
-        translate([15, i * 22 + 12, 1.5])
+    for(i=[0:5]) {
+        translate([i * 22 + 16, 14 + 5, 1.5])
         Nozzle();
+    }
+
+    for(i=[0:5]) {
+        translate([i * 22 + 16, 0, 4.5])
+        Magnet();
     }
 }
 
