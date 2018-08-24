@@ -47,8 +47,8 @@ module CutoutNozzle() {
 module CutoutMagnet() {
     translate([-10, 0, 0])
     cube([20, 11, 3]);
-    translate([0, 5, -6])
-    cylinder(d=3, 15);
+    //translate([0, 5, -6])
+    //cylinder(d=3, 15);
 }
 
 module NozzleHolder() {
@@ -105,5 +105,6 @@ module PnPHolderWithParts() {
 }
 
 //PnPHolderWithParts();
+rotate(90, [1, 0, 0])
 PnPHolder();
 //CutoutNozzle();
